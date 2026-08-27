@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: devops-demo
-          image: devops-demo:3.0
-          imagePullPolicy: IfNotPresent
+          image: mohadsaeed/devops-demo:3.0
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           envFrom:
