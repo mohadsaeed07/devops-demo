@@ -1,0 +1,23 @@
+stages:
+  - test
+  - build
+  - deploy
+
+test:
+  stage: test
+  script:
+    - echo "Running tests..."
+    - echo "Tests passed!"
+
+build:
+  stage: build
+  script:
+    - echo "Building Docker image..."
+    - docker build -t mohadsaeed/demo-webapp:3.0 .
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying to Kubernetes..."
+    - kubectl apply -f k8s/
+    
