@@ -1,9 +1,9 @@
-```groovy
 pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "mohadsaeed/devops-demo:3.0"
+        DOCKER_IMAGE = "mohadsaeed/devops-demo"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${IMAGE_NAME} .'
+                sh 'docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} .'
             }
         }
 
@@ -36,7 +36,7 @@ pipeline {
                 )]) {
                     sh '''
                         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                        docker push ${IMAGE_NAME}
+                        docker push ${DOCKER_IMAGE}:${IMAGE_TAG}
                         docker logout
                     '''
                 }
@@ -46,6 +46,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh 'kubectl apply -f k8s/'
+                sh 'kubectl set image deployment/devops-demo devops-demo=${DOCKER_IMAGE}:${IMAGE_TAG}'
             }
         }
 
@@ -57,5 +58,3 @@ pipeline {
         }
     }
 }
-```
-
